@@ -45,6 +45,18 @@ object ScalaRecap extends App {
   val incrementer: Int => Int = x => x + 1
   val incremented = incrementer(42)
 
+  val concat: (String, String) => String = _ + _
+  val toUpperCase= (s:String) => s.toUpperCase()
+  val yolo = toUpperCase(concat("a","b"))
+  def concat2[B](a:B, b:B): String = String.valueOf(a)+String.valueOf(b)
+  def concatFn = new Function2[String,String,String] {
+    override def apply(v1: String, v2:String): String = v1+v2
+  }
+  println("Concat " + concat("foo","bar"))
+  println("Concat " + concat2("foo","bar"))
+  println("Concat " + concatFn("foo","bar"))
+  println("Concat " + yolo)
+
   // map, flatMap, filter
   val processedList = List(1,2,3).map(incrementer)
 
@@ -71,13 +83,15 @@ object ScalaRecap extends App {
     42
   }
 
+  aFuture.foreach(println)
+
   aFuture.onComplete {
     case Success(meaningOfLife) => println(s"I've found $meaningOfLife")
     case Failure(ex) => println(s"I have failed: $ex")
   }
 
   // Partial functions
-  val aPartialFunction: PartialFunction[Int, Int] = {
+  val aPartialFunction: PartialFunction[Int, Int] = { // equivalent a un match sur x
     case 1 => 43
     case 8 => 56
     case _ => 999
@@ -89,6 +103,7 @@ object ScalaRecap extends App {
   def methodWithImplicitArgument(implicit x: Int) = x + 43
   implicit val implicitInt = 67
   val implicitCall = methodWithImplicitArgument
+  println(implicitCall)
 
   // implicit conversions - implicit defs
   case class Person(name: String) {
@@ -105,6 +120,7 @@ object ScalaRecap extends App {
   "Lassie".bark
 
   /*
+    // comment le cimpileur trouve le implicit qui va bien:
     - local scope
     - imported scope
     - companion objects of the types involved in the method call
